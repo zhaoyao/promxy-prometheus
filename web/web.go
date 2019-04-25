@@ -519,6 +519,15 @@ func (h *Handler) SetReady(v bool) {
 
 	h.ready.Store(0)
 	h.metrics.readyStatus.Set(0)
+	h.ready.Store(1)
+}
+
+func (h *Handler) GetRouter() *route.Router {
+	return h.router
+}
+
+func (h *Handler) Getv1API() *api_v1.API {
+	return h.apiV1
 }
 
 // Verifies whether the server is ready or not.

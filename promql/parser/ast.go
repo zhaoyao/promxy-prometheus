@@ -439,6 +439,7 @@ func SetChild(node Node, i int, child Node) {
 	case *UnaryExpr:
 		n.Expr = child.(Expr)
 	case *MatrixSelector:
+		n.VectorSelector = child.(Expr)
 	case *StepInvariantExpr:
 		n.Expr = child.(Expr)
 	case *NumberLiteral, *StringLiteral, *VectorSelector:

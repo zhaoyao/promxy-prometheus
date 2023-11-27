@@ -395,9 +395,22 @@ func (f inspector) Visit(node Node, path []Node) (Visitor, error) {
 // Inspect traverses an AST in depth-first order: It starts by calling
 // f(node, path); node must not be nil. If f returns a nil error, Inspect invokes f
 // for all the non-nil children of node, recursively.
-func Inspect(ctx context.Context, s *EvalStmt, f inspector, nr NodeReplacer) (Node, error) {
+func Inspect(ctx context.Context, s *EvalStmt, f inspector, nrs ...NodeReplacer) (node Node, err error) {
 	//nolint: errcheck
-	return Walk(ctx, inspector(f), s, s.Expr, nil, nr)
+	if len(nrs) == 0 {
+		return Walk(ctx, inspector(f), s, s.Expr, nil, nil)
+	}
+
+	for _, nr := range nrs {
+		node, err = Walk(ctx, inspector(f), s, s.Expr, nil, nr)
+		if err != nil {
+			return
+		}
+
+		s.Expr = node.(Expr)
+	}
+
+	return
 }
 
 func SetChild(node Node, i int, child Node) {
